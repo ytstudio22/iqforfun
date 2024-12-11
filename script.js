@@ -41,8 +41,9 @@ function displayQuestion() {
             optionsElement.appendChild(optionBtn);
         });
 
-        nextBtn.style.display = 'none'; // Hide the "Next Question" button initially
-        prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none'; // Hide "Previous" button on first question
+        // Ensure Next and Previous buttons are visible
+        nextBtn.style.display = 'inline-block'; // Show the "Next Question" button
+        prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none'; // Show Previous if not first question
     }
 }
 
@@ -58,7 +59,7 @@ function checkAnswer(selectedOption) {
     const optionBtns = document.querySelectorAll('.option-btn');
     optionBtns.forEach(btn => btn.disabled = true);
 
-    nextBtn.style.display = 'inline-block'; // Show the "Next Question" button
+    nextBtn.style.display = 'inline-block'; // Show the "Next Question" button after selection
 }
 
 // Move to the next question or show the score
@@ -87,7 +88,7 @@ function showFinalScore() {
     scoreDisplay.innerText = score;
     scoreContainer.style.display = 'block';
     nextBtn.style.display = 'none';
-    prevBtn.style.display = 'none'; // Hide the previous button when the test is completed
+    prevBtn.style.display = 'none'; // Hide the Previous button when the test is completed
 }
 
 // Restart the test
@@ -97,5 +98,5 @@ restartBtn.addEventListener('click', function() {
     scoreContainer.style.display = 'none';
     displayQuestion();
     nextBtn.style.display = 'none'; // Hide the "Next Question" button initially
-    prevBtn.style.display = 'none'; // Hide the "Previous" button initially
+    prevBtn.style.display = 'none'; // Hide the "Previous Question" button initially
 });

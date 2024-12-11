@@ -1,23 +1,23 @@
 [
   {
     "question": "What is 2 + 2?",
-    "options": ["3", "4", "5", "6"],
-    "answer": "4"
+    "options": ["a) 3", "b) 4", "c) 5", "d) 6"],
+    "answer": "b) 4"
   },
   {
     "question": "What is the capital of France?",
-    "options": ["Berlin", "Paris", "Madrid", "London"],
-    "answer": "Paris"
+    "options": ["a) Berlin", "b) Paris", "c) Madrid", "d) London"],
+    "answer": "b) Paris"
   },
   {
     "question": "What is the largest planet in our solar system?",
-    "options": ["Earth", "Jupiter", "Saturn", "Mars"],
-    "answer": "Jupiter"
+    "options": ["a) Earth", "b) Jupiter", "c) Saturn", "d) Mars"],
+    "answer": "b) Jupiter"
   },
   {
     "question": "What is the square root of 16?",
-    "options": ["2", "4", "6", "8"],
-    "answer": "4"
+    "options": ["a) 2", "b) 4", "c) 6", "d) 8"],
+    "answer": "b) 4"
   },
 
     {

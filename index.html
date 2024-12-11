@@ -10,19 +10,21 @@
     <div class="container">
         <h1>MCQ Test</h1>
         
-        <!-- Question Display Area -->
-        <div id="question-container">
+        <!-- Start Test Button -->
+        <button id="startTestBtn" class="start-btn">Start Test</button>
+        
+        <!-- Question Display Area (Initially Hidden) -->
+        <div id="question-container" style="display: none;">
             <div id="question"></div>
             <div id="options"></div>
             <button id="prevBtn" style="display: none;">Previous Question</button>
             <button id="nextBtn" style="display: none;">Next Question</button>
-
         </div>
 
-        <!-- Score Display -->
+        <!-- Score Display (Initially Hidden) -->
         <div id="score-container" style="display: none;">
             <h2>Your Score: <span id="score"></span> / <span id="total-questions"></span></h2>
-            <button id="restartBtn">Restart Test</button>
+            <button id="retakeTestBtn" class="start-btn" style="display: none;">Retake Test</button>
         </div>
     </div>
 

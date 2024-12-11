@@ -18,5 +18,83 @@
     "question": "What is the square root of 16?",
     "options": ["2", "4", "6", "8"],
     "answer": "4"
-  }
+  },
+
+    {
+      "question": "Which number logically completes the sequence? 2, 6, 12, 20, 30, ?",
+      "options": ["a) 40", "b) 42", "c) 48", "d) 56"],
+      "answer": "b) 42"
+    },
+    {
+      "question": "Which of the following is the odd one out?",
+      "options": ["a) Circle", "b) Square", "c) Triangle", "d) Cube"],
+      "answer": "d) Cube"
+    },
+    {
+      "question": "If \"A\" is equal to 1, \"B\" is equal to 2, and so on, what is the sum of the letters in the word \"HELLO\"?",
+      "options": ["a) 52", "b) 54", "c) 55", "d) 56"],
+      "answer": "c) 55"
+    },
+    {
+      "question": "What is the missing number in the sequence? 7, 11, 17, 25, 35, ?",
+      "options": ["a) 47", "b) 45", "c) 43", "d) 40"],
+      "answer": "a) 47"
+    },
+    {
+      "question": "Find the odd one out:",
+      "options": ["a) 3, 6, 9", "b) 4, 8, 16", "c) 5, 10, 20", "d) 7, 14, 28"],
+      "answer": "b) 4, 8, 16"
+    },
+    {
+      "question": "Which word is least like the others?",
+      "options": ["a) Piano", "b) Guitar", "c) Violin", "d) Trumpet"],
+      "answer": "d) Trumpet"
+    },
+    {
+      "question": "If all roses are flowers and some flowers fade quickly, which of the following is a logical conclusion?",
+      "options": ["a) All roses fade quickly", "b) Some roses fade quickly", "c) No roses fade quickly", "d) Some flowers are not roses"],
+      "answer": "b) Some roses fade quickly"
+    },
+    {
+      "question": "What comes next in the series? J, F, M, A, M, J, J, ?",
+      "options": ["a) S", "b) A", "c) T", "d) D"],
+      "answer": "a) S"
+    },
+    {
+      "question": "If two pencils cost 12 cents, how much do 12 pencils cost?",
+      "options": ["a) 60 cents", "b) 72 cents", "c) 120 cents", "d) 144 cents"],
+      "answer": "b) 72 cents"
+    },
+    {
+      "question": "Which number is the odd one out?",
+      "options": ["a) 144", "b) 196", "c) 225", "d) 250"],
+      "answer": "d) 250"
+    },
+    {
+      "question": "Which of the following shapes has no sides?",
+      "options": ["a) Square", "b) Circle", "c) Triangle", "d) Rectangle"],
+      "answer": "b) Circle"
+    },
+    {
+      "question": "What is the next number in the sequence? 1, 4, 9, 16, 25, ?",
+      "options": ["a) 30", "b) 35", "c) 36", "d) 40"],
+      "answer": "c) 36"
+    },
+    {
+      "question": "If you rearrange the letters of \"NEW DOOR,\" what new word do you get?",
+      "options": ["a) WONDER", "b) UNDER", "c) RENEW", "d) WARD"],
+      "answer": "c) RENEW"
+    },
+    {
+      "question": "Which number replaces the question mark? 2, 3, 5, 8, 12, 17, ?",
+      "options": ["a) 22", "b) 23", "c) 24", "d) 25"],
+      "answer": "b) 23"
+    },
+    {
+      "question": "Which of these words is the odd one out?",
+      "options": ["a) Chair", "b) Sofa", "c) Table", "d) Pillow"],
+      "answer": "d) Pillow"
+    }
+  
+
 ]

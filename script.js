@@ -8,7 +8,7 @@ let totalQuestions = 0;
 const questionElement = document.getElementById("question");
 const optionsElement = document.getElementById("options");
 const nextBtn = document.getElementById("nextBtn");
-const prevBtn = document.getElementById("prevBtn");
+												   
 const scoreContainer = document.getElementById("score-container");
 const scoreDisplay = document.getElementById("score");
 const totalQuestionsDisplay = document.getElementById("total-questions");
@@ -18,7 +18,7 @@ const restartBtn = document.getElementById("restartBtn");
 fetch('questions.json')
     .then(response => response.json())
     .then(data => {
-        questions = data.questions;  // Assuming the JSON data is structured like { "questions": [...] }
+        questions = data;
         totalQuestions = questions.length;
         totalQuestionsDisplay.innerText = totalQuestions;
         displayQuestion();
@@ -30,9 +30,9 @@ function displayQuestion() {
     if (currentQuestionIndex < totalQuestions) {
         const currentQuestion = questions[currentQuestionIndex];
         questionElement.innerText = currentQuestion.question;
-
+        
         optionsElement.innerHTML = ''; // Clear previous options
-
+        
         currentQuestion.options.forEach(option => {
             const optionBtn = document.createElement("button");
             optionBtn.innerText = option;
@@ -41,9 +41,8 @@ function displayQuestion() {
             optionsElement.appendChild(optionBtn);
         });
 
-        // Enable/Disable Previous and Next buttons based on current position
-        prevBtn.disabled = currentQuestionIndex === 0;
-        nextBtn.disabled = currentQuestionIndex === totalQuestions - 1;
+        nextBtn.style.display = 'none'; // Hide the "Next Question" button initially
+																															   
     }
 }
 
@@ -58,6 +57,8 @@ function checkAnswer(selectedOption) {
     // Disable options after selection
     const optionBtns = document.querySelectorAll('.option-btn');
     optionBtns.forEach(btn => btn.disabled = true);
+
+    nextBtn.style.display = 'inline-block'; // Show the "Next Question" button
 }
 
 // Move to the next question or show the score
@@ -71,13 +72,13 @@ nextBtn.addEventListener('click', function() {
     }
 });
 
-// Move to the previous question
-prevBtn.addEventListener('click', function() {
-    if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
-        displayQuestion();
-    }
-});
+								
+											  
+								   
+							   
+						  
+	 
+   
 
 // Show the final score
 function showFinalScore() {
@@ -85,8 +86,8 @@ function showFinalScore() {
     optionsElement.innerHTML = '';
     scoreDisplay.innerText = score;
     scoreContainer.style.display = 'block';
-    nextBtn.disabled = true;
-    prevBtn.disabled = true; // Disable both buttons on completion
+    nextBtn.style.display = 'none';
+																						  
 }
 
 // Restart the test
@@ -95,6 +96,6 @@ restartBtn.addEventListener('click', function() {
     score = 0;
     scoreContainer.style.display = 'none';
     displayQuestion();
-    nextBtn.disabled = false; // Enable the Next button when restarting
-    prevBtn.disabled = true;  // Disable Previous button on the first question
+    nextBtn.style.display = 'none'; // Hide the "Next Question" button initially
+																		   
 });

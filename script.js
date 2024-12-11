@@ -8,6 +8,7 @@ let totalQuestions = 0;
 const questionElement = document.getElementById("question");
 const optionsElement = document.getElementById("options");
 const nextBtn = document.getElementById("nextBtn");
+const prevBtn = document.getElementById("prevBtn");
 const scoreContainer = document.getElementById("score-container");
 const scoreDisplay = document.getElementById("score");
 const totalQuestionsDisplay = document.getElementById("total-questions");
@@ -17,7 +18,7 @@ const restartBtn = document.getElementById("restartBtn");
 fetch('questions.json')
     .then(response => response.json())
     .then(data => {
-        questions = data;
+        questions = data.questions;  // Assuming the JSON data is structured like { "questions": [...] }
         totalQuestions = questions.length;
         totalQuestionsDisplay.innerText = totalQuestions;
         displayQuestion();
@@ -29,9 +30,9 @@ function displayQuestion() {
     if (currentQuestionIndex < totalQuestions) {
         const currentQuestion = questions[currentQuestionIndex];
         questionElement.innerText = currentQuestion.question;
-        
+
         optionsElement.innerHTML = ''; // Clear previous options
-        
+
         currentQuestion.options.forEach(option => {
             const optionBtn = document.createElement("button");
             optionBtn.innerText = option;
@@ -41,6 +42,7 @@ function displayQuestion() {
         });
 
         nextBtn.style.display = 'none'; // Hide the "Next Question" button initially
+        prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none'; // Hide "Previous" button on first question
     }
 }
 
@@ -70,6 +72,14 @@ nextBtn.addEventListener('click', function() {
     }
 });
 
+// Move to the previous question
+prevBtn.addEventListener('click', function() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        displayQuestion();
+    }
+});
+
 // Show the final score
 function showFinalScore() {
     questionElement.innerText = "Test Completed!";
@@ -77,6 +87,7 @@ function showFinalScore() {
     scoreDisplay.innerText = score;
     scoreContainer.style.display = 'block';
     nextBtn.style.display = 'none';
+    prevBtn.style.display = 'none'; // Hide the previous button when the test is completed
 }
 
 // Restart the test
@@ -86,4 +97,5 @@ restartBtn.addEventListener('click', function() {
     scoreContainer.style.display = 'none';
     displayQuestion();
     nextBtn.style.display = 'none'; // Hide the "Next Question" button initially
+    prevBtn.style.display = 'none'; // Hide the "Previous" button initially
 });

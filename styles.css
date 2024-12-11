@@ -152,5 +152,6 @@ button {
     #nextBtn, #prevBtn, #restartBtn {
         width: 100%;
         max-width: 300px; /* Limit the button width */
+        display: inline-block;
     }
 }

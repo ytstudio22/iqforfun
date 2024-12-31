@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pac-Man Game</title>
   <style>
-  
-		/* Add the Greek font - Example: 'Gloock' from Google Fonts */
-		@import url('https://fonts.googleapis.com/css2?family=Gloock&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Gloock&display=swap');
 
     body {
       background-color: black;
@@ -20,7 +18,6 @@
       margin: 0 auto;
     }
 
-
     /* Retro pixel font for score and game over text */
     @font-face {
       font-family: 'PressStart2P';
@@ -29,7 +26,7 @@
 
     /* Retro Scoreboard */
     #score {
-      font-family: 'Gloock', sans-serif;  /* Replace 'PressStart2P' with 'Gloock' */
+      font-family: 'Gloock', sans-serif;  
       color: white;
       position: absolute;
       top: 10px;
@@ -37,55 +34,78 @@
       font-size: 20px;
     }
 
-	#gameOver {
-	color: white;
-	font-size: 24px;
-	text-align: center;
-	display: none;
-	position: absolute;
-	top: 50%;  /* Center vertically */
-	left: 50%;  /* Center horizontally */
-	transform: translate(-50%, -50%);  /* Adjust for true centering */
-	width: 100%;
-    display: flex;
-    flex-direction: column; /* Stack text and button vertically */
-    align-items: center; /* Center content horizontally */
-    justify-content: center; /* Center content vertically */
-	}
-	
-	
-#gameOver p {
-  margin-bottom: 100px; /* Add some space between text and button */
-}
-
-
     #gameOver {
-      font-family: 'Gloock', sans-serif;  /* Replace 'PressStart2P' with 'Gloock' */
       color: white;
       font-size: 24px;
       text-align: center;
       display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
- 
     button {
-      font-family: 'Gloock', sans-serif;  /* Replace 'PressStart2P' with 'Gloock' */
+      font-family: 'Gloock', sans-serif;  
       font-size: 16px;
       padding: 10px;
       background-color: #333;
       color: white;
       border: none;
       cursor: pointer;
-	  margin-top: 20px;
-	  position: absolute;
-	  bottom: 20px;  /* Place the button at the bottom of the #gameOver container */
-	  left: 50%;  /* Horizontally center the button */
-	  transform: translateX(-50%);  /* Adjust for true centering */
+      margin-top: 20px;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     button:hover {
       background-color: #555;
     }
+
+    /* Arrow Button Styles for Mobile */
+    .arrow-btn {
+      position: absolute;
+      bottom: 30px;
+      width: 60px;
+      height: 60px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      text-align: center;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .arrow-btn:hover {
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    #up-btn {
+      right: 80px;
+    }
+
+    #down-btn {
+      right: 20px;
+    }
+
+    #left-btn {
+      right: 140px;
+    }
+
+    #right-btn {
+      right: 200px;
+    }
+
   </style>
 </head>
 <body>
@@ -96,489 +116,126 @@
   <button onclick="restartGame()">Restart Game</button>
 </div>
 
+<!-- Mobile Arrow Controls -->
+<div id="up-btn" class="arrow-btn" onclick="movePacManMobile('up')">↑</div>
+<div id="down-btn" class="arrow-btn" onclick="movePacManMobile('down')">↓</div>
+<div id="left-btn" class="arrow-btn" onclick="movePacManMobile('left')">←</div>
+<div id="right-btn" class="arrow-btn" onclick="movePacManMobile('right')">→</div>
+
 <script>
-  // Setup canvas and context
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
 
-  // Game constants
   const pacManRadius = 15;
-  const ghostRadius = 15;
-  const pelletRadius = 5;
   const pacManSpeed = 2;
+  let pacMan = { x: 250, y: 250, dx: pacManSpeed, dy: 0, direction: "right", eyes: [{ x: 3, y: -5 }, { x: -3, y: -5 }] };
 
-  // Pac-Man state
-  let pacMan = {
-    x: 250,
-    y: 250,
-    dx: pacManSpeed,
-    dy: 0,
-    direction: "right",
-    eyes: [{ x: 3, y: -5 }, { x: -3, y: -5 }],
-  };
-
-  // Ghosts state
   let ghosts = [
     { x: 100, y: 100, dx: Math.random() * 2 - 1, dy: Math.random() * 2 - 1, color: "red", alive: true },
     { x: 400, y: 100, dx: Math.random() * 2 - 1, dy: Math.random() * 2 - 1, color: "blue", alive: true },
   ];
 
-  // Pellet state
-  let pellet = { x: Math.random() * (canvas.width - pelletRadius * 2), y: Math.random() * (canvas.height - pelletRadius * 2) };
-
-  // Score state
+  let pellet = { x: Math.random() * (canvas.width - 10), y: Math.random() * (canvas.height - 10) };
   let score = 0;
-
-  // Key states
-  let keys = {
-    ArrowUp: false,
-    ArrowDown: false,
-    ArrowLeft: false,
-    ArrowRight: false,
-  };
-
-  // Game Over state
   let gameOver = false;
-
-  // Handle key presses
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp") keys.ArrowUp = true;
-    if (e.key === "ArrowDown") keys.ArrowDown = true;
-    if (e.key === "ArrowLeft") keys.ArrowLeft = true;
-    if (e.key === "ArrowRight") keys.ArrowRight = true;
-  });
-
-  document.addEventListener("keyup", (e) => {
-    if (e.key === "ArrowUp") keys.ArrowUp = false;
-    if (e.key === "ArrowDown") keys.ArrowDown = false;
-    if (e.key === "ArrowLeft") keys.ArrowLeft = false;
-    if (e.key === "ArrowRight") keys.ArrowRight = false;
-  });
 
   // Restart the game
   function restartGame() {
     score = 0;
-    pacMan = {
-      x: 250,
-      y: 250,
-      dx: pacManSpeed,
-      dy: 0,
-      direction: "right",
-      eyes: [{ x: 3, y: -5 }, { x: -3, y: -5 }],
-    };
+    pacMan = { x: 250, y: 250, dx: pacManSpeed, dy: 0, direction: "right", eyes: [{ x: 3, y: -5 }, { x: -3, y: -5 }] };
     ghosts = [
       { x: 100, y: 100, dx: Math.random() * 2 - 1, dy: Math.random() * 2 - 1, color: "red", alive: true },
       { x: 400, y: 100, dx: Math.random() * 2 - 1, dy: Math.random() * 2 - 1, color: "blue", alive: true },
     ];
-    pellet = { x: Math.random() * (canvas.width - pelletRadius * 2), y: Math.random() * (canvas.height - pelletRadius * 2) };
+    pellet = { x: Math.random() * (canvas.width - 10), y: Math.random() * (canvas.height - 10) };
     gameOver = false;
     document.getElementById("gameOver").style.display = "none";
     animate();
   }
 
-
-
-function drawPacMan() {
-  // Cylindrical body (rounded rectangle)
-  const pacManWidth = pacManRadius * 2.5; // Width of the cylindrical body
-  const pacManHeight = pacManRadius * 1.5; // Slightly taller height to simulate the cylindrical look
-
-  // Draw the cylindrical shape (using a rounded rectangle)
-  ctx.beginPath();
-  ctx.moveTo(pacMan.x - pacManWidth / 2, pacMan.y - pacManHeight / 2); // Start at the top-left
-  ctx.lineTo(pacMan.x + pacManWidth / 2, pacMan.y - pacManHeight / 2); // Top-right
-  ctx.arcTo(pacMan.x + pacManWidth / 2, pacMan.y + pacManHeight / 2, pacMan.x - pacManWidth / 2, pacMan.y + pacManHeight / 2, pacManWidth / 4); // Bottom-right curve
-  ctx.lineTo(pacMan.x - pacManWidth / 2, pacMan.y + pacManHeight / 2); // Bottom-left
-  ctx.arcTo(pacMan.x - pacManWidth / 2, pacMan.y - pacManHeight / 2, pacMan.x + pacManWidth / 2, pacMan.y - pacManHeight / 2, pacManWidth / 4); // Bottom-left curve
-  ctx.fillStyle = "yellow";  // Color of Pac-Man
-  ctx.fill();
-
-  // Draw the eyes
-  ctx.beginPath();
-  ctx.arc(pacMan.x + pacMan.eyes[0].x, pacMan.y + pacMan.eyes[0].y, 2, 0, Math.PI * 2);  // Left Eye
-  ctx.arc(pacMan.x + pacMan.eyes[1].x, pacMan.y + pacMan.eyes[1].y, 2, 0, Math.PI * 2);  // Right Eye
-  ctx.fillStyle = "black";
-  ctx.fill();
-
-  // Beak (mouth)
-  ctx.beginPath();
-  ctx.moveTo(pacMan.x, pacMan.y);
-  ctx.lineTo(pacMan.x + (pacMan.dx * pacManRadius) / 3, pacMan.y + (pacMan.dy * pacManRadius) / 3);
-  ctx.strokeStyle = "red";
-  ctx.lineWidth = 3;
-  ctx.stroke();
-}
-
-
-
-
- // Draw ghosts
-function drawGhosts() {
-  ghosts.forEach(ghost => {
-    if (ghost.alive) {
-      // Ghost Body
-      ctx.beginPath();
-      ctx.moveTo(ghost.x - ghostRadius, ghost.y); // Start at the left side
-      ctx.quadraticCurveTo(ghost.x - ghostRadius / 2, ghost.y - ghostRadius, ghost.x + ghostRadius / 2, ghost.y - ghostRadius);  // Top curve
-      ctx.quadraticCurveTo(ghost.x + ghostRadius, ghost.y - ghostRadius, ghost.x + ghostRadius, ghost.y);  // Right curve
-      ctx.quadraticCurveTo(ghost.x + ghostRadius / 2, ghost.y + ghostRadius / 2, ghost.x - ghostRadius / 2, ghost.y + ghostRadius / 2); // Bottom curve
-      ctx.closePath();
-      ctx.fillStyle = ghost.color;  // Set ghost color (Red, Blue, etc.)
-      ctx.fill();
-
-      // Draw eyes
-      let eyeOffsetX = ghost.x - ghostRadius / 3;  // Eye X position relative to the ghost body
-      let eyeOffsetY = ghost.y - ghostRadius / 2;  // Eye Y position
-
-      // Left eye
-      ctx.beginPath();
-      ctx.arc(eyeOffsetX, eyeOffsetY, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "white";
-      ctx.fill();
-
-      // Right eye
-      ctx.beginPath();
-      ctx.arc(eyeOffsetX + 10, eyeOffsetY, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "white";
-      ctx.fill();
-
-      // Pupils
-      ctx.beginPath();
-      ctx.arc(eyeOffsetX + 2, eyeOffsetY, 2, 0, Math.PI * 2);
-      ctx.arc(eyeOffsetX + 12, eyeOffsetY, 2, 0, Math.PI * 2);
-      ctx.fillStyle = "black";
-      ctx.fill();
-    }
-  });
-}
-
-// Special Pellet state
-// Special Pellet state
-let specialPellet = {
-  x: 0,
-  y: 0,
-  active: false,
-  color: '',
-  spawnTime: 0, // Time when the special pellet was spawned
-  visibleTime: 0, // Time when the special pellet appeared on screen
-};
-
-// Helper function to generate a random rainbow color
-function getRandomRainbowColor() {
-  const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF']; // Rainbow colors
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
-}
-
-let arrowCount = 0; // Arrow counter
-
-
-function spawnAndHandleSpecialPellet() {
-  const currentTime = Date.now();
-
-    if (currentTime - specialPellet.spawnTime > 30000) {
-      // Respawn the special pellet every 25 seconds
-      specialPellet.x = Math.random() * (canvas.width - pelletRadius * 2) + pelletRadius;
-      specialPellet.y = Math.random() * (canvas.height - pelletRadius * 2) + pelletRadius;
-      specialPellet.color = getRandomRainbowColor(); // Assign a rainbow color
-      specialPellet.active = true; // Activate the special pellet
-      specialPellet.spawnTime = currentTime; // Set spawn time
-      specialPellet.visibleTime = currentTime; // Set the time it became visible
-    }
- 
-	// Deactivate special pellet after 10 seconds
-	if(specialPellet.active == true){
-		if (currentTime - specialPellet.spawnTime > 10000) {
-	
-		specialPellet.active = false; 
-		}
-	}
-  // Draw the special pellet if it's active
-  if (specialPellet.active) {
-    ctx.beginPath();
-    ctx.arc(specialPellet.x, specialPellet.y, pelletRadius, 0, Math.PI * 2);
-    ctx.fillStyle = specialPellet.color;
-    ctx.fill();
-  }
-
-  // Check if Pac-Man collides with the special pellet
-  if (specialPellet.active) {
-    const dist = Math.hypot(pacMan.x - specialPellet.x, pacMan.y - specialPellet.y);
-    if (dist < pacManRadius + pelletRadius) {
-      score += 25; // Add 25 points to the score
-	   arrowCount++; // Increment the arrow count
-      specialPellet.active = false; // Deactivate special pellet after collision
-    }
-  }
-}
-
-
-// Function to generate a random rainbow color
-function getRainbowColor() {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgb(${r}, ${g}, ${b})`;
-}
-
-
-
-
-  // Draw pellet
-  function drawPellet() {
-    ctx.beginPath();
-    ctx.arc(pellet.x, pellet.y, pelletRadius, 0, Math.PI * 2);
-    ctx.fillStyle = "white";
-    ctx.fill();
-  }
-
-  // Draw score
-  function drawScore() {
-    ctx.font = "20px 'Gloock', sans-serif";  // Use Greek font here
-    ctx.fillStyle = "white";
-    ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
-	
-	// Draw Arrow counter
-  ctx.fillText(`Arrows: ${arrowCount}`, canvas.width - 100, 60); // Positioning the Arrow counter below the score
-
-  }
-  
-
-  // Move Pac-Man
-  function movePacMan() {
-    if (keys.ArrowUp) {
+  // Mobile movement handler
+  function movePacManMobile(direction) {
+    if (direction === "up") {
       pacMan.dy = -pacManSpeed;
       pacMan.dx = 0;
-      pacMan.direction = "up";
-    } else if (keys.ArrowDown) {
+    } else if (direction === "down") {
       pacMan.dy = pacManSpeed;
       pacMan.dx = 0;
-      pacMan.direction = "down";
-    } else if (keys.ArrowLeft) {
+    } else if (direction === "left") {
       pacMan.dy = 0;
       pacMan.dx = -pacManSpeed;
-      pacMan.direction = "left";
-    } else if (keys.ArrowRight) {
+    } else if (direction === "right") {
       pacMan.dy = 0;
       pacMan.dx = pacManSpeed;
-      pacMan.direction = "right";
     }
 
     pacMan.x += pacMan.dx;
     pacMan.y += pacMan.dy;
 
     // Keep Pac-Man within boundaries
-    if (pacMan.x < pacManRadius) pacMan.x = pacManRadius; // Left
-    if (pacMan.x > canvas.width - pacManRadius) pacMan.x = canvas.width - pacManRadius; // Right
-    if (pacMan.y < pacManRadius) pacMan.y = pacManRadius; // Top
-    if (pacMan.y > canvas.height - pacManRadius) pacMan.y = canvas.height - pacManRadius; // Bottom
+    if (pacMan.x < pacManRadius) pacMan.x = pacManRadius;
+    if (pacMan.x > canvas.width - pacManRadius) pacMan.x = canvas.width - pacManRadius;
+    if (pacMan.y < pacManRadius) pacMan.y = pacManRadius;
+    if (pacMan.y > canvas.height - pacManRadius) pacMan.y = canvas.height - pacManRadius;
   }
 
-  
-  function moveGhosts() {
-  ghosts.forEach(ghost => {
-    if (ghost.alive) {
-      // Move ghost in the current direction
-      ghost.x += ghost.dx;
-      ghost.y += ghost.dy;
-
-      // Randomly change the direction after a fixed number of frames (or time)
-      // Here, we'll change the direction every 100 frames for example
-      if (Math.random() < 0.01) {  // Change direction with a small probability
-        // Random direction: 0 = up, 1 = right, 2 = down, 3 = left
-        const randomDirection = Math.floor(Math.random() * 4);
-
-        switch (randomDirection) {
-          case 0: // Up
-            ghost.dx = 0;
-            ghost.dy = -2;
-            break;
-          case 1: // Right
-            ghost.dx = 2;
-            ghost.dy = 0;
-            break;
-          case 2: // Down
-            ghost.dx = 0;
-            ghost.dy = 2;
-            break;
-          case 3: // Left
-            ghost.dx = -2;
-            ghost.dy = 0;
-            break;
-        }
-      }
-
-      // Keep the ghost within canvas boundaries (stop if they hit the edge)
-      if (ghost.x < ghostRadius) ghost.x = ghostRadius;
-      if (ghost.x > canvas.width - ghostRadius) ghost.x = canvas.width - ghostRadius;
-      if (ghost.y < ghostRadius) ghost.y = ghostRadius;
-      if (ghost.y > canvas.height - ghostRadius) ghost.y = canvas.height - ghostRadius;
-    }
-  });
-}
-
-  
-  // Check collision between Pac-Man and pellet
-  function checkPelletCollision() {
-    const dist = Math.hypot(pacMan.x - pellet.x, pacMan.y - pellet.y);
-    if (dist < pacManRadius + pelletRadius) {
-      score += 10;
-      pellet = { x: Math.random() * (canvas.width - pelletRadius * 2), y: Math.random() * (canvas.height - pelletRadius * 2) };
-    }
+  // Function to draw Pac-Man
+  function drawPacMan() {
+    ctx.beginPath();
+    ctx.arc(pacMan.x, pacMan.y, pacManRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "yellow";
+    ctx.fill();
   }
 
-  // Check collision between Pac-Man and ghosts
-  function checkGhostCollision() {
+  // Function to draw Ghosts
+  function drawGhosts() {
     ghosts.forEach(ghost => {
-      const dist = Math.hypot(pacMan.x - ghost.x, pacMan.y - ghost.y);
-      if (dist < pacManRadius + ghostRadius && ghost.alive) {
-        gameOver = true;
-        gameOverScreen();  // Show the game over screen
+      if (ghost.alive) {
+        ctx.beginPath();
+        ctx.arc(ghost.x, ghost.y, pacManRadius, 0, Math.PI * 2);
+        ctx.fillStyle = ghost.color;
+        ctx.fill();
       }
     });
   }
 
-  // Game Over screen
+  // Function to draw Pellet
+  function drawPellet() {
+    ctx.beginPath();
+    ctx.arc(pellet.x, pellet.y, pacManRadius / 2, 0, Math.PI * 2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+  }
+
+  // Function to update score
+  function drawScore() {
+    ctx.font = "20px 'Gloock', sans-serif";
+    ctx.fillStyle = "white";
+    ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
+  }
+
+  // Game over screen
   function gameOverScreen() {
     document.getElementById("finalScore").textContent = score;
     document.getElementById("gameOver").style.display = "block";
   }
-  
-let lastScore = 0;
-
-function drawBoundary() {
-  ctx.strokeStyle = "white";  // Set the boundary line color
-  ctx.lineWidth = 5;  // Set the width of the boundary line
-  ctx.beginPath();
-  ctx.rect(0, 0, canvas.width, canvas.height);  // Draw rectangle boundary
-  ctx.stroke();  // Apply the stroke
-}
-
-function getRandomColor() {
-  // Generate random RGB values (0-255)
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgb(${r},${g},${b})`;
-}
-
-// Initialize life counter and hearts array
-let life = 0;
-let hearts = []; // Array to keep track of active hearts
-
-// Heart size and position
-const heartRadius = 15;
-const heartDuration = 25000; // 25 seconds
-const heartSpawnInterval = 50; // Spawn a heart every 750 points scored
-
-
-// Draw Heart Shape Function
-function drawHeart(x, y) {
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.bezierCurveTo(x - heartRadius, y - heartRadius, x - heartRadius * 2, y + heartRadius, x, y + heartRadius * 2);
-  ctx.bezierCurveTo(x + heartRadius * 2, y + heartRadius, x + heartRadius, y - heartRadius, x, y);
-  ctx.closePath();
-  ctx.fillStyle = "red";
-  ctx.fill();
-}
-
-// Update Hearts on Screen
-
-// Function to spawn hearts
-function spawnHearts() {
-  // Check if no heart is currently active and the score condition is met
-  if (hearts.length === 0 && score >= heartSpawnInterval * (life + 1)) {
-    // Create a new heart object
-    const heart = {
-      x: Math.random() * (canvas.width - heartRadius * 2) + heartRadius,
-      y: Math.random() * (canvas.height - heartRadius * 2) + heartRadius,
-      spawnTime: Date.now(),
-      active: true
-    };
-    hearts.push(heart); // Add the heart to the hearts array
-  }
-
-  // Draw and handle heart logic
-  hearts.forEach((heart, index) => {
-    if (heart.active) {
-      drawHeart(heart.x, heart.y);
-
-      // Check if the heart is still active (25 seconds timeout)
-      if (Date.now() - heart.spawnTime > heartDuration) {
-        heart.active = false; // Deactivate the heart after 25 seconds
-      }
-
-      // Check for collision between Pac-Man and heart
-      const dist = Math.hypot(pacMan.x - heart.x, pacMan.y - heart.y);
-      if (dist < pacManRadius + heartRadius) {
-        life++; // Increase the life counter when Pac-Man collects a heart
-        hearts.splice(index, 1); // Remove the heart from the array after being collected
-      }
-    }
-  });
-}
-
-// Draw Life Counter (Hearts)
-function drawLifeCounter() {
-  ctx.font = "20px Arial";
-  ctx.fillStyle = "black";
-  ctx.fillText(`Life: ${life}`, 10, 30); // Display the life counter in the top left
-}
 
   // Animation loop
   function animate() {
     if (gameOver) return;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-
-	drawBoundary(); // Draw the boundary wall (call this first)
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawPacMan();
     drawGhosts();
     drawPellet();
-	
-	  // Spawn and update hearts
-  spawnHearts();
-
-  // Draw the life counter
-  drawLifeCounter();
-
-  
-    checkPelletCollision();
-
     drawScore();
-	
-	// Handle the special pellet
-  spawnAndHandleSpecialPellet(); // This function handles spawning, drawing, and collision for the special pellet
 
-
-
-    movePacMan();
-    moveGhosts();
-
-    checkGhostCollision();
-	checkPelletCollision();
-  
-    // Spawn a new ghost every 100 points
-  if (score >= lastScore + 100) {
-        lastScore = score;  // Update the last score
-
-      ghosts.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        dx: Math.random() * 2 - 1,
-        dy: Math.random() * 2 - 1,
-        color:getRandomColor(),  // You can change color here for new ghosts
-        alive: true
-      });
-    }
-
-    requestAnimationFrame(animate); // Continue the animation loop
+    requestAnimationFrame(animate);
   }
 
-  // Start the game
-  animate();
+  animate(); // Start the game loop
+
 </script>
 
 </body>
